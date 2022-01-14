@@ -33,6 +33,7 @@ std::vector<std::string> split(const std::string &str, char d)
 
 void printIp(const std::vector<std::vector<std::string>> &ip_pool)
 {
+    
     for (auto ip = ip_pool.cbegin(); ip != ip_pool.cend(); ++ip)
     {
         for (auto ip_part = ip->cbegin(); ip_part != ip->cend(); ++ip_part)
@@ -49,14 +50,26 @@ void printIp(const std::vector<std::vector<std::string>> &ip_pool)
 
 bool rsort(const std::vector<std::string> &ip1, const std::vector<std::string> &ip2)
 {
-        
-    //return std::stoi(ip1[0]) > (std::stoi(ip2[0]));
-    //return !std::lexicographical_compare(ip1.begin(), ip1.end(), ip2.begin(), ip2.end());
-    std::size_t ip_one = std::stoi(ip1[0])*256*256*256+std::stoi(ip1[1])*256*256+std::stoi(ip1[2])*256+std::stoi(ip1[3]);
-    std::size_t ip_two = std::stoi(ip2[0])*256*256*256+std::stoi(ip2[1])*256*256+std::stoi(ip2[2])*256+std::stoi(ip2[3]);
-    return ip_one > ip_two;
-}
+    for (auto ip_one = ip1.cbegin(), ip_two = ip2.cbegin(); ip_one != ip1.cend() && ip_two != ip2.cend(); ++ip_one, ++ip_two)
+    {
+        if (ip_one->size() > ip_two->size())
+            return true;
+        else if (ip_one->size() < ip_two->size())
+            return false;
+        else
+        {
+            for (auto s = ip_one->cbegin(), st = ip_two->cbegin(); s != ip_one->cend() && st != ip_two->cend(); ++s, ++st)
+            {
+                if (*s > *st)
+                    return true;
+                else if (*s < *st)
+                    return false;
+            }
+        }
+    }
 
+    return false;
+}
 
 int main(int, char**)
 {
@@ -74,10 +87,10 @@ int main(int, char**)
         }
 
         // TODO reverse lexicographically sort
-  
-        std::sort(ip_pool.begin(), ip_pool.end(), rsort);
 
+        std::sort(ip_pool.begin(), ip_pool.end(), rsort);
         printIp(ip_pool);
+
 
         // 222.173.235.246
         // 222.130.177.64
