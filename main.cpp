@@ -1,97 +1,27 @@
-#include <cassert>
-#include <cstdlib>
 #include <iostream>
 #include <string>
 #include <vector>
 #include <algorithm>
 #include "lib.h"
+#include "ippool.h"
 
-// ("",  '.') -> [""]
-// ("11", '.') -> ["11"]
-// ("..", '.') -> ["", "", ""]
-// ("11.", '.') -> ["11", ""]
-// (".11", '.') -> ["", "11"]
-// ("11.22", '.') -> ["11", "22"]
-std::vector<std::string> split(const std::string &str, char d)
+
+int main(int, char **)
 {
-    std::vector<std::string> r;
-
-    std::string::size_type start = 0;
-    std::string::size_type stop = str.find_first_of(d);
-    while(stop != std::string::npos)
-    {
-        r.push_back(str.substr(start, stop - start));
-
-        start = stop + 1;
-        stop = str.find_first_of(d, start);
-    }
-
-    r.push_back(str.substr(start));
-
-    return r;
-}
-
-void printIp(const std::vector<std::vector<std::string>> &ip_pool)
-{
-    
-    for (auto ip = ip_pool.cbegin(); ip != ip_pool.cend(); ++ip)
-    {
-        for (auto ip_part = ip->cbegin(); ip_part != ip->cend(); ++ip_part)
-        {
-            if (ip_part != ip->cbegin())
-            {
-                std::cout << ".";
-            }
-            std::cout << *ip_part;
-        }
-        std::cout << std::endl;
-    }
-}
-
-bool rsort(const std::vector<std::string> &ip1, const std::vector<std::string> &ip2)
-{
-    for (auto ip_one = ip1.cbegin(), ip_two = ip2.cbegin(); ip_one != ip1.cend() && ip_two != ip2.cend(); ++ip_one, ++ip_two)
-    {
-        if (ip_one->size() > ip_two->size())
-            return true;
-        else if (ip_one->size() < ip_two->size())
-            return false;
-        else
-        {
-            for (auto s = ip_one->cbegin(), st = ip_two->cbegin(); s != ip_one->cend() && st != ip_two->cend(); ++s, ++st)
-            {
-                if (*s > *st)
-                    return true;
-                else if (*s < *st)
-                    return false;
-            }
-        }
-    }
-
-    return false;
-}
-
-int main(int, char**)
-{
-    std::cout<< "Version: " <<version() << std::endl;
+    std::cout << "Version: " << version() << std::endl;
     try
     {
-        std::vector<std::vector<std::string> > ip_pool;
+        IpPool ippool;
+        PrintPool print;
 
-        for(std::string line; std::getline(std::cin, line);)
-        {
-            if(line == "" || line == "end")
-                break;
-            std::vector<std::string> v = split(line, '\t');
-            ip_pool.push_back(split(v.at(0), '.'));
-        }
+        ippool.getLineIpPoll();
 
         // TODO reverse lexicographically sort
-
-        std::sort(ip_pool.begin(), ip_pool.end(), rsort);
-        printIp(ip_pool);
-
-
+        auto ip = ippool.reverseLexicographicallySort();
+        
+        print.show(ip);
+      
+       
         // 222.173.235.246
         // 222.130.177.64
         // 222.82.198.61
@@ -155,7 +85,7 @@ int main(int, char**)
         // 39.46.86.85
         // 5.189.203.46
     }
-    catch(const std::exception &e)
+    catch (const std::exception &e)
     {
         std::cerr << "Error: " << e.what() << std::endl;
     }
