@@ -20,8 +20,7 @@ int main(int, char **)
         auto ip = ippool.reverseLexicographicallySort();
         
         print.show(ip);
-      
-       
+
         // 222.173.235.246
         // 222.130.177.64
         // 222.82.198.61
@@ -32,7 +31,10 @@ int main(int, char **)
 
         // TODO filter by first byte and output
         // ip = filter(1)
-
+        if(auto [ok, pool] = ippool.filter(1); ok)
+        {
+            print.show(pool);
+        }
         // 1.231.69.33
         // 1.87.203.225
         // 1.70.44.170

@@ -40,8 +40,14 @@ std::pair<bool, std::vector<std::string>> IpPool::filter(int octet) const
 {
     std::string oct = std::to_string(octet);
     std::vector<std::string> pool;  
-/*     auto eq = std::lower_bound(_ippool.cbegin(), _ippool.cend(), oct);
-    for(auto i = eq.first; i != eq.second; ++i )
+    auto lower_ip = std::lower_bound(_ippool.cbegin(), _ippool.cend(), oct, [](const std::vector<std::string> &ip, const std::string &o){
+            return ip.at(0) > o;
+    });
+    auto upper_ip = std::upper_bound(_ippool.cbegin(), _ippool.cend(), oct, [](const std::string &o, const std::vector<std::string> &ip){
+            return ip.at(0) < o;
+    }); 
+
+    for(auto i = lower_ip; i != upper_ip; ++i)
     {
         std::string ip;
         for(auto j = i->cbegin(); j != i->cend(); ++j)
@@ -53,7 +59,7 @@ std::pair<bool, std::vector<std::string>> IpPool::filter(int octet) const
             ip+= *j;
         }
         pool.push_back(ip);
-    } */
+    }
     return std::make_pair(true, pool);
 }
 
