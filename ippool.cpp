@@ -36,18 +36,30 @@ const std::vector<std::vector<std::string>>& IpPool::reverseLexicographicallySor
     return _ippool;
 }
 
-std::pair<bool, std::vector<std::string>> IpPool::filter(int octet) const
+std::pair<bool, std::vector<std::string>> IpPool::filter(int octet_1, int octet_2) const
 {
-    std::string oct = std::to_string(octet);
-    std::vector<std::string> pool;  
-    auto lower_ip = std::lower_bound(_ippool.cbegin(), _ippool.cend(), oct, [](const std::vector<std::string> &ip, const std::string &o){
-            return ip.at(0) > o;
-    });
-    auto upper_ip = std::upper_bound(_ippool.cbegin(), _ippool.cend(), oct, [](const std::string &o, const std::vector<std::string> &ip){
-            return ip.at(0) < o;
-    }); 
+    std::string oct = std::to_string(octet_1);
 
-    for(auto i = lower_ip; i != upper_ip; ++i)
+    auto found_ip = myequal_range(_ippool.cbegin(), _ippool.cend(), oct, 0);
+
+    if(octet_2 != -1)
+    {
+        std::string oct2 = std::to_string(octet_2);
+        found_ip = myequal_range(found_ip.first, found_ip.second, oct2, 1);
+    }
+
+    std::vector<std::string> pool; 
+
+    pool = split(found_ip.first, found_ip.second);
+
+    return std::make_pair((pool.size() != 0)? true : false, pool);
+}
+
+std::vector<std::string> IpPool::split(std::vector<std::vector<std::string>>::const_iterator found_first,
+                                std::vector<std::vector<std::string>>::const_iterator found_last) const
+{
+    std::vector<std::string> pool;
+    for(auto i = found_first; i != found_last; ++i)
     {
         std::string ip;
         for(auto j = i->cbegin(); j != i->cend(); ++j)
@@ -60,7 +72,7 @@ std::pair<bool, std::vector<std::string>> IpPool::filter(int octet) const
         }
         pool.push_back(ip);
     }
-    return std::make_pair(true, pool);
+    return pool;
 }
 
 std::vector<std::string> IpPool::split(const std::string &str, char d)

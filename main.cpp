@@ -44,6 +44,10 @@ int main(int, char **)
         // TODO filter by first and second bytes and output
         // ip = filter(46, 70)
 
+        if(auto [ok, pool] = ippool.filter(46, 70); ok)
+        {
+            print.show(pool);
+        }
         // 46.70.225.39
         // 46.70.147.26
         // 46.70.113.73
