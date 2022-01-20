@@ -55,6 +55,25 @@ std::pair<bool, std::vector<std::string>> IpPool::filter(int octet_1, int octet_
     return std::make_pair((pool.size() != 0)? true : false, pool);
 }
 
+std::pair<bool, std::vector<std::vector<std::string>>> IpPool::filter_any(int octet) const
+{
+    std::string oct = std::to_string(octet);
+    std::vector<std::vector<std::string>> pool;
+
+    for (auto it = _ippool.begin(); it != _ippool.end(); ++it)
+    {
+        for(auto ip_it = it->begin(); ip_it != it->end(); ++ip_it)
+        {
+            if(*ip_it == oct)
+            {
+                pool.push_back(*it);
+                break;
+            }
+        }
+    }
+    return std::make_pair((pool.size() != 0)? true : false, pool);
+}
+
 std::vector<std::string> IpPool::split(std::vector<std::vector<std::string>>::const_iterator found_first,
                                 std::vector<std::vector<std::string>>::const_iterator found_last) const
 {

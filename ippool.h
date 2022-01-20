@@ -17,6 +17,8 @@ public:
 
     std::pair<bool, std::vector<std::string>> filter(int octet_1, int octet_2 = -1) const;
 
+    std::pair<bool, std::vector<std::vector<std::string>>> filter_any(int octet) const;
+
     void getLineIpPoll();
 
 
@@ -38,15 +40,11 @@ template<class ForwardIt, class T>
 std::pair<ForwardIt,ForwardIt> 
     myequal_range(ForwardIt first, ForwardIt last, const T& value, int index)
 {
-    return std::make_pair(std::lower_bound(first, last, value, [index](const std::vector<std::string> &ip, const std::string &o){
-            bool r = false;
-            if(std::stoi(ip.at(index)) > std::stoi(o))
-                r = true;
-            return r;}),
-        std::upper_bound(first, last, value, [index](const std::string &o, const std::vector<std::string> &ip){
-            bool r = false;
-            if(std::stoi(ip.at(index)) < std::stoi(o))
-                r = true;
-            return r;})
-    );
+    return std::make_pair(std::lower_bound(first, last, value, [index](const std::vector<std::string> &ip, const std::string &o)
+    {
+        return std::stoi(ip.at(index)) > std::stoi(o);
+    }), std::upper_bound(first, last, value, [index](const std::string &o, const std::vector<std::string> &ip)
+    {
+        return std::stoi(ip.at(index)) < std::stoi(o);
+    }));
 }

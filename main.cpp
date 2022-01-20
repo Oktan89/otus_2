@@ -8,7 +8,7 @@
 
 int main(int, char **)
 {
-    std::cout << "Version: " << version() << std::endl;
+   // std::cout << "Version: " << version() << std::endl;
     try
     {
         IpPool ippool;
@@ -55,7 +55,10 @@ int main(int, char **)
 
         // TODO filter by any byte and output
         // ip = filter_any(46)
-
+        if(auto [ok, pool] = ippool.filter_any(46); ok)
+        {
+            print.show(pool);
+        }
         // 186.204.34.46
         // 186.46.222.194
         // 185.46.87.231
