@@ -1,14 +1,11 @@
 #include <iostream>
-#include <string>
-#include <vector>
-#include <algorithm>
 #include "lib.h"
 #include "ippool.h"
 
 
 int main(int, char **)
 {
-   // std::cout << "Version: " << version() << std::endl;
+    //std::cout << "Version: " << version() << std::endl;
     try
     {
         IpPool ippool;

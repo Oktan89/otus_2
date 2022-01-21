@@ -6,7 +6,7 @@ set(PROJECT_VESRION 0.0.${PATCH_VERSION})
 project(ipfilter VERSION ${PROJECT_VESRION})
 
 option(WITH_BOOST_TEST "Whether to build Boost test" OFF)
-option(WITH_GOOGLE_TEST "Whether to build Google tets" OFF)
+option(WITH_GOOGLE_TEST "Whether to build Google tets" ON)
 
 configure_file(version.h.in version.h)
 
@@ -49,8 +49,8 @@ if(WITH_BOOST_TEST)
 endif()
 
 if(WITH_GOOGLE_TEST)
-    add_subdirectory(./googletest)
-    add_executable(google_test_version test_version_g.cpp)
+    add_subdirectory(./googletest EXCLUDE_FROM_ALL)
+    add_executable(google_test_version test_version_g.cpp ippool.cpp)
 
     set_target_properties(google_test_version PROPERTIES
         CXX_STANDARD 17
