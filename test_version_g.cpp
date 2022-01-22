@@ -8,7 +8,7 @@ std::vector<std::vector<std::string>> initReversSortPoolIp();
 
 std::vector<std::string> initPoolIp1Octet1();
 
-std::vector<std::vector<std::string>> initPoolIpfilter2Octet4670();
+std::vector<std::string> initPoolIpfilterTwoOctet46and70();
 
 std::vector<std::vector<std::string>> initPoolIpfilterAny46();
 
@@ -20,27 +20,36 @@ TEST(testVersionGoogle, testValidVersion) {
 TEST(ipPoolTests, reverseLexicographicallySortInIpool){
   
     IpPool testpool(initPoolIp());
-    auto sortIpGood = initReversSortPoolIp();
-    auto sortIp = testpool.reverseLexicographicallySort();
-    bool ok = (sortIpGood == sortIp)? true : false;
-    
-    EXPECT_TRUE(ok) << "IpoolIp not sorted";
+
+    EXPECT_TRUE(initReversSortPoolIp() == testpool.reverseLexicographicallySort()) << "IpoolIp not sorted";
 }
 
 TEST(ipPoolTests, filterOneOctetIN1){
   
     IpPool testpool(initPoolIp());
-    auto sortIpGood = initReversSortPoolIp();
-    auto sortIp = testpool.reverseLexicographicallySort();
-    bool ok = (sortIpGood == sortIp)? true : false;
     
-    EXPECT_TRUE(ok) << "IpoolIp not sorted";
+    EXPECT_TRUE(initReversSortPoolIp() == testpool.reverseLexicographicallySort()) << "IpoolIp not sorted";
 
-    auto filterIP1Good = initPoolIp1Octet1();
-    auto filterIp1 = testpool.filter(1);
+    EXPECT_TRUE(initPoolIp1Octet1() == testpool.filter(1).second) << "Filter for octet 1 not work";
+}
+
+TEST(ipPoolTests, filterTwoOctetIN46and70)
+{
+    IpPool testpool(initPoolIp());
     
-    ok = (filterIP1Good == filterIp1.second )? true : false;
-    EXPECT_TRUE(ok) << "Filter for octet1 not work";
+    EXPECT_TRUE(initReversSortPoolIp() == testpool.reverseLexicographicallySort()) << "IpoolIp not sorted";
+
+    EXPECT_TRUE(initPoolIpfilterTwoOctet46and70() == testpool.filter(46, 70).second) << "Filter for two octet 46 and 70 not work";
+
+}
+
+TEST(ipPoolTests, filterAny46)
+{
+    IpPool testpool(initPoolIp());
+    
+    EXPECT_TRUE(initReversSortPoolIp() == testpool.reverseLexicographicallySort()) << "IpoolIp not sorted";
+
+    EXPECT_TRUE(initPoolIpfilterAny46()==testpool.filter_any(46).second) << "Filter for any octet 46 not work";
 }
 
 std::vector<std::vector<std::string>> initPoolIp()
@@ -95,14 +104,14 @@ std::vector<std::string> initPoolIp1Octet1()
   return ippool;
 }
 
-std::vector<std::vector<std::string>> initPoolIpfilter2Octet4670()
+std::vector<std::string> initPoolIpfilterTwoOctet46and70()
 {
-  std::vector<std::vector<std::string>> ippool
+  std::vector<std::string> ippool
   {
-      {"46", "70", "225", "39"}, 
-      {"46", "70", "147", "26"}, 
-      {"46", "70", "113", "73"}, 
-      {"46", "70", "29", "76"}
+      {"46.70.225.39"}, 
+      {"46.70.147.26"}, 
+      {"46.70.113.73"}, 
+      {"46.70.29.76"}
   };
   return ippool;
 }
@@ -114,7 +123,9 @@ std::vector<std::vector<std::string>> initPoolIpfilterAny46()
       {"46", "70", "225", "39"}, 
       {"46", "70", "147", "26"}, 
       {"46", "70", "113", "73"}, 
-      {"46", "70", "29", "76"}
+      {"46", "70", "29", "76"},
+      {"39", "46", "86", "85"},
+      {"5", "189", "203", "46"}
   };
   return ippool;
 }
